@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+     http://www.springframework.org/schema/context
+     http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	<!-- id 表示你这个组件的名字，class表示组件类 -->
+	<bean id="hello" class="helloworld.HelloImpl"></bean>
+	<bean id="hello2" class="helloworld.HelloImpl"></bean>
+
+	<!-- 不指定id，只配置必须的全限定类名，由IoC容器为其生成一个标识，客户端必须通过接口“T getBean(Class<T> requiredType)”获取Bean -->
+<!-- 	<bean class="helloworld.HelloImpl2"/> -->
+
+	<!-- 如果id和name一样，IoC容器能检测到，并消除冲突 --> 
+<!-- 	<bean id="hello3" name="hello3" class="helloworld.HelloImpl"/> -->
+
+	<!-- 指定多个name，多个name用“，”、“；”、“ ”分割，第一个被用作标识符，其他的（name1、name2、name3）是别名，所有标识符也必须在Ioc容器中唯一 -->
+	<bean name="hello4;name1,name2,name3" class="helloworld.HelloImpl"/>
+	
+	<!-- 当指定id时，name指定的标识符全部为别名 -->
+	<bean id="hello5" name="alias1,alias2;alias3 alias4" class="helloworld.HelloImpl"/>
+	
+	<!-- 	使用<alias>标签指定别名，别名也必须在IoC容器中唯一 -->
+	<bean id="hello6" class="helloworld.HelloImpl"/>
+	<alias alias="name6" name="hello6"/>
+	<alias alias="name7" name="hello6"/>
+	
+	<!--使用默认构造参数-->
+	<bean id="hello7" class="helloworld.HelloImpl2"/>
+	
+	<!-- 默认情况Ioc容器不采用懒加载，lazy-init="false"，会初始化bean，或调用静态工厂方法。配置lazy-init="true"进行懒加载 -->
+	<bean id="hello8" class="helloworld.HelloImpl2">
+		<constructor-arg index="0" value="Hello Spring!"/>  
+	</bean>
+	
+	<!-- 	使用静态工厂方式实例化Bean，除了指定必须的class属性，还要指定factory-method属性来指定实例化Bean的方法，而且使用静态工厂方法也允许指定方法参数，spring IoC容器将调用此属性指定的方法来获取Bean -->
+<!-- 	<bean id="hello9" class="helloworld.HelloApiStaticFactory" factory-method="newInstance">   -->
+<!-- 		<constructor-arg index="0" value="Hello Spring!"/>   -->
+<!-- 	</bean> -->
+	
+	
+	<!-- 1、定义实例工厂Bean -->
+    <bean id="beanInstanceFactory" class="helloworld.HelloApiStaticFactory"/>  
+	
+	<!-- 2、使用实例工厂Bean创建Bean -->
+    <bean id="hello10" factory-bean="beanInstanceFactory" factory-method="getInstance">
+    	<constructor-arg index="0" value="Hello Spring By beanFactory!"></constructor-arg>  
+    </bean>  
+</beans>  
